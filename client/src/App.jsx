@@ -9,7 +9,14 @@ const App = () => {
   const [userAddress, setUserAddress] = useState("");
   const [userMNumber, setUserMNumber] = useState("");
   const [highlightedRow, setHighlightedRow] = useState(null);
-  
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageUpload = (e) => {
+    // Get the selected image file from the input
+    const file = e.target.files[0];
+    setSelectedImage(file);
+    console.log(file);
+  };
 
   
 
@@ -18,13 +25,20 @@ const App = () => {
       userId,
       userName,
       userAddress,
-      userMNumber,
+      userMNumber
     };
-
+    const formData = new FormData();
+    formData.append("userData", JSON.stringify(userData));
+    formData.append("userImage", selectedImage);
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/user/saveUser",
-        userData
+        formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+      }
       );
       console.log("User saved:", response.data);
       setUsers([...users, response.data]);
@@ -92,7 +106,7 @@ const App = () => {
     <div>
       <h1>Pasindu</h1>
       <div>
-      
+      <form action="" encType="multipart/form-data">
       <label htmlFor="userId">User ID</label>
       <br />
       <input
@@ -134,10 +148,19 @@ const App = () => {
         required
       />
       <br />
+      {/* <label htmlFor="userImage">Upload User Image</label>
+        <br />
+        <input
+          type="file"
+          id="userImage"
+          accept="image/*"
+          onChange={handleImageUpload}
+        />
+        <br /> */}
       <button onClick={handleSave}>Save User</button>
       <button onClick={handleUpdate}>Update User</button>
       <button onClick={handleDelete}>Delete User</button>
-      
+      </form>
       </div>
       {users.length > 0 ? (
         <table>

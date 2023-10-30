@@ -4,10 +4,12 @@ import com.example.UserManagement.dto.ResponseDTO;
 import com.example.UserManagement.dto.UserDTO;
 import com.example.UserManagement.service.UserService;
 import com.example.UserManagement.util.VarList;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 @CrossOrigin
@@ -21,9 +23,10 @@ public class UserController {
     @Autowired
     private ResponseDTO responseDTO;
     @PostMapping(value = "/saveUser")
-    public ResponseEntity saveUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity saveUser(@RequestPart("userData") UserDTO userDTO, @RequestPart("userImage") MultipartFile userImage){
       try{
-          String res = userService.saveUser(userDTO);
+
+          String res = userService.saveUser(userDTO,userImage);
           if (res.equals("00")){
               responseDTO.setCode(VarList.RSP_SUCCESS);
               responseDTO.setMessage("Success");
